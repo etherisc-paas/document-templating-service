@@ -47,7 +47,7 @@ jobs:
           JEKYLL_ENV: production
 
       - name: Check internal links in built site
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@v2.8.0
         with:
           args: --config .lycheerc.toml --verbose --no-progress --accept 200,301,302,403,404,429 _site/
           fail: false
@@ -90,7 +90,7 @@ jobs:
         run: sleep 30
 
       - name: Check all documentation links
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@v2.8.0
         with:
           args: |
             --config .lycheerc.toml -vvvv --format markdown
