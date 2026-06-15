@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -37,7 +37,7 @@ jobs:
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v6
         with:
           enablement: true
 
@@ -58,14 +58,14 @@ jobs:
 
       - name: Upload build-time link check report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: build-time-link-check
           path: build-time-link-check.md
           retention-days: 7
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
 
   deploy:
     environment:
@@ -76,7 +76,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   link-check:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
     if: github.event_name != 'pull_request'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Wait for deployment
         run: sleep 30
@@ -113,7 +113,7 @@ jobs:
 
       - name: Upload deployment link check report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: deployment-link-check
           path: deployment-link-check.md
