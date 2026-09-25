@@ -16,6 +16,7 @@ def remove_file(filename: str):
 
 def remove_temporary_files():
     dir_name = 'temp/'
+    os.makedirs(dir_name, exist_ok=True)
     files = os.listdir(dir_name)
     
     if len(files) > 1:

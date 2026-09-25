@@ -79,6 +79,22 @@ class TestDocxJinjaLinterService:
         assert result.template_preview is not None
     
     @pytest.mark.asyncio
+    async def test_docxtpl_cell_tags_are_valid(self):
+        """cellbg, colspan, hm, and vm are docxtpl cell tags, not syntax errors."""
+        content = """
+        {%tr for row in rows %}
+        {% cellbg loop.cycle('F2F5FA','FFFFFF') %}{{ row.name }}
+        {% colspan row.span %}{{ row.total }}
+        {%tr endfor %}
+        """
+
+        docx_bytes = self.create_test_docx(content)
+        result = await self.linter.lint_docx_file(docx_bytes, "test.docx")
+
+        assert result.success is True
+        assert len(result.errors) == 0
+
+    @pytest.mark.asyncio
     async def test_unclosed_if_tag(self):
         """Test detection of unclosed if tag."""
         content = """

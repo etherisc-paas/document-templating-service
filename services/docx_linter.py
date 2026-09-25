@@ -525,6 +525,7 @@ class DocxJinjaLinterService:
             (r'{%\s*tr\s+([^%]*?)%}', r'{% \1 %}'), # {%tr for ...%} -> {% for ...%}
             (r'{%\s*tc\s+([^%]*?)%}', r'{% \1 %}'), # {%tc if ...%} -> {% if ...%}
             (r'{%\s*r\s+([^%]*?)%}', r'{% \1 %}'),  # {%r if ...%} -> {% if ...%}
+            (r'{%\s*(?:cellbg|colspan|hm|vm)\s+([^%]*?)%}', r'{{ \1 }}'),  # {% cellbg expr %} -> {{ expr }}
         ]
         
         for pattern, replacement in docxtpl_patterns:
