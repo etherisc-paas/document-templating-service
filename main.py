@@ -23,6 +23,7 @@ from jinja2 import (
     UndefinedError,
 )
 from jinja2.exceptions import TemplateError
+from jinja2.sandbox import ImmutableSandboxedEnvironment
 from pydantic import BaseModel, Json
 
 from models.schemas import LintOptions, LintResponseFormat, LintResult
@@ -100,6 +101,17 @@ class DictToObject:
     def __iter__(self):
         """Support iteration over keys"""
         return iter(self._original_dict.keys())
+
+
+def build_jinja_env(undefined_class):
+    """Jinja environment used to render user-supplied .docx templates.
+
+    MUST be sandboxed: templates are untrusted input. A plain Environment lets a template
+    reach os/subprocess via e.g. cycler.__init__.__globals__ and run shell commands as root
+    (incident 2026-11-15). The immutable sandbox blocks underscore attributes, unsafe
+    callables and mutation of containers.
+    """
+    return ImmutableSandboxedEnvironment(undefined=undefined_class)
 
 
 def convert_dict_to_object(data, undefined_class=None):
@@ -1222,8 +1234,6 @@ async def process_document_template(
         # Stage 3: Template Rendering with Data Injection
         try:
             # Create custom Jinja2 environment with configurable undefined behavior
-            from jinja2 import Environment
-
             # Choose undefined behavior: API parameter overrides environment variable
             # Options: "silent" (default), "debug", "strict", "property_missing"
             if api_undefined_behavior is not None:
@@ -1263,7 +1273,7 @@ async def process_document_template(
             logger.info(
                 "Context data prepared with dot notation support and undefined handling")
 
-            jinja_env = Environment(undefined=undefined_class)
+            jinja_env = build_jinja_env(undefined_class)
             logger.info(
                 f"Created Jinja2 environment with undefined class: {undefined_class}")
             logger.info(f"Jinja2 environment undefined: {jinja_env.undefined}")

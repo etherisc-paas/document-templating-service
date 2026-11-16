@@ -21,7 +21,8 @@ import os
 from typing import List, Dict, Any, Optional, Tuple
 from docxtpl import DocxTemplate
 from docx import Document
-from jinja2 import Environment, TemplateSyntaxError, select_autoescape
+from jinja2 import TemplateSyntaxError, select_autoescape
+from jinja2.sandbox import ImmutableSandboxedEnvironment
 from jinja2.exceptions import TemplateError
 import logging
 
@@ -67,7 +68,7 @@ class DocxJinjaLinterService:
     
     def __init__(self):
         """Initialize the linter service."""
-        self.env = Environment(
+        self.env = ImmutableSandboxedEnvironment(
             autoescape=select_autoescape(['html', 'xml']),
             trim_blocks=True,
             lstrip_blocks=True
